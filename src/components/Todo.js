@@ -157,15 +157,14 @@ function Todo() {
 
    return (
     <div className='container mt-5'>
-  <div className='row justify-content-center'>
-    <div className='col-md-6'>
-      <div className='container mt-3'>
+      {/* <h3 className='text-center'>Hello {loginDetails.email}</h3> */}
+      <div className='container mt-3 align-items-center justify-content-center'>
         <form onSubmit={handleSubmit}>
-          <div className='mb-3 row align-items-center'>
-            <label className='col-md-3 col-form-label text-end' htmlFor='todoTask'>
+          <div className='mb-3 row align-items-center justify-content-center'>
+            <label className='col-md-2 col-form-label text-md-end' htmlFor='todoTask'>
               Task
             </label>
-            <div className='col-md-9'>
+            <div className='col-md-10'>
               <input
                 className='form-control'
                 type='text'
@@ -174,10 +173,10 @@ function Todo() {
                 onChange={handleInput}
               />
             </div>
-            <label htmlFor='todoDate' className='col-md-3 col-form-label text-end'>
+            <label htmlFor='todoDate' className='col-md-2 text-md-end'>
               Due date
             </label>
-            <div className='col-md-9'>
+            <div className='col-md-10'>
               <input
                 className='form-control'
                 type='date'
@@ -189,15 +188,15 @@ function Todo() {
           </div>
           <div className='text-center'>
             <button type='submit' className='btn btn-outline-primary'>
-              {editIndex !== null ? 'Edit Todo' : 'Add Todo'}
+              { editIndex !== null ? "Edit Todo" : "Add Todo"}
             </button>
           </div>
         </form>
       </div>
 
       <div className='mt-3'>
-        {listOfTodosFromDb.map((item) => (
-          <div className='container mb-3 bg-light p-3 rounded' key={item.id}>
+        {listOfTodosFromDb.map((item, index) => (
+          <div className='container mb-3 bg-light p-3 rounded' key={index}>
             <div>
               <h4>{item.todoTask}</h4>
             </div>
@@ -205,7 +204,7 @@ function Todo() {
               <p>{item.todoDate}</p>
             </div>
             <div className='text-end'>
-              <button onClick={() => handleEdit(item.id)} className='btn btn-info me-1'>
+            <button onClick={() => handleEdit(index, item.id)} className='btn btn-info me-1'>
                 Edit
               </button>
               <button onClick={() => handleRemove(item.id)} className='btn btn-danger'>
@@ -216,8 +215,6 @@ function Todo() {
         ))}
       </div>
     </div>
-  </div>
-</div>
   )
 }
 
