@@ -1,9 +1,9 @@
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Routes, Route, Link} from 'react-router-dom';
 // import axios from "axios"
-import Home from "./Home"
-import Todo from './Todo';
+import Home from "./components/Home"
+import Todo from './components/Todo';
 
 function App() {
   return (
