@@ -27,7 +27,7 @@ function Todo() {
 
     const fetchTodoListFromDB = async () => {
 
-      await axios.get("http://localhost:3001/todoList").then((response) => {
+      await axios.get("https://todo-app-kwagyei-7f678d5987d6.herokuapp.com/todoList").then((response) => {
         setlistOfTodosFromDb(response.data)
         //console.log(listOfTodosFromDb)
       })
@@ -35,18 +35,19 @@ function Todo() {
 
     const addTodoToDB = async () => {
 
-      await axios.post("http://localhost:3001/todoList",todo).then((response) => {
+      await axios.post("https://todo-app-kwagyei-7f678d5987d6.herokuapp.com/todoList",todo).then((response) => {
 
       fetchTodoListFromDB()
 
       console.log('task  added')
       })
+      
 
     }
 
     const deleteTodoFromDB = async (itemId) => {
 
-      await axios.delete(`http://localhost:3001/todoList/${itemId}`).then( (response) => {
+      await axios.delete(`https://todo-app-kwagyei-7f678d5987d6.herokuapp.com/todoList/${itemId}`).then( (response) => {
 
       console.log("Item has been removed")
 
@@ -60,7 +61,7 @@ function Todo() {
       const newItem = todo; // Replace with your new item data
   
       try {
-        const response = await axios.put(`http://localhost:3001/todoList/replace/${itemId}`, newItem).then( (response) => {
+        const response = await axios.put(`https://todo-app-kwagyei-7f678d5987d6.herokuapp.com/todoList/replace/${itemId}`, newItem).then( (response) => {
 
         console.log("Item has been replaced")
 
