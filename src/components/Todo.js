@@ -7,46 +7,102 @@ function Todo() {
 
     const [listOfTodosFromDb,setlistOfTodosFromDb] = useState([])
 
-    useEffect( () => {
-  
-      axios.get("http://localhost:3001/todoList").then((response) => {
-        setlistOfTodosFromDb(response.data)
-      })
-  
-    }, [] )
-
-
-
     const [todo,setTodo] = useState({
 
-            todoName : "",
-            todoDate : ""
-        }
-    )
-
-    const [todoList, setTodoList] = useState([])
-
-
-
+          todoTask : "",
+          todoDate : ""
+      })
+     
+    //const [todoList, setTodoList] = useState([])
 
     const [editIndex, seteditIndex] = useState(null)
 
 
+
+    useEffect( () => {
+
+      fetchTodoListFromDB()
+
+    }, [])
+
+    const fetchTodoListFromDB = async () => {
+
+      await axios.get("http://localhost:3001/todoList").then((response) => {
+        setlistOfTodosFromDb(response.data)
+        //console.log(listOfTodosFromDb)
+      })
+    }
+
+    const addTodoToDB = async () => {
+
+      await axios.post("http://localhost:3001/todoList",todo).then((response) => {
+
+      fetchTodoListFromDB()
+
+      console.log('task  added')
+      })
+
+    }
+
+    const deleteTodoFromDB = async (itemId) => {
+
+      await axios.delete(`http://localhost:3001/todoList/${itemId}`).then( (response) => {
+
+      console.log("Item has been removed")
+
+      fetchTodoListFromDB()
+
+      })
+
+    }
+
+    const editTodoItemInDB = async (itemId) => {
+      const newItem = todo; // Replace with your new item data
+  
+      try {
+        const response = await axios.put(`http://localhost:3001/todoList/replace/${itemId}`, newItem).then( (response) => {
+
+        console.log("Item has been replaced")
+
+        fetchTodoListFromDB()
+
+        })
+  
+        if (response.ok) {
+          console.log('Todo item replaced successfully');
+          
+          // Optionally, you can fetch and update the todo list here
+        } else {
+          console.error('Failed to replace todo item');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+
+      } }
+    
+
     const addItem = () => {
-        if (todo.todoName.trim() !== '' && todo.todoDate.trim() !== '') {
+        if (todo.todoTask.trim() !== '' && todo.todoDate.trim() !== '') {
             if (editIndex !== null ) {
 
-                const updatedList = [...todoList];
-                updatedList[editIndex] = todo;
-                setTodoList(updatedList);
+                editTodoItemInDB(editIndex)
+
                 seteditIndex(null)
 
+                // const updatedList = [...todoList];
+                // updatedList[editIndex] = todo;
+                // setTodoList(updatedList);
+
             } else {
-                setTodoList( [...todoList, todo])
+
+              addTodoToDB()
+
+             //setTodoList( [...todoList, todo])
+              // POST REQUEST, send the todo item to the database
             }
             
           setTodo({
-            todoName: '',
+            todoTask: '',
             todoDate: '',
           })
 
@@ -54,10 +110,10 @@ function Todo() {
       };
 
   
-
+/////FORM HANDLERS
     const handleInput = (event) => {
 
-        setTodo(prev => ({...prev, [event.target.name] : event.target.value }))
+      setTodo(prev => ({...prev, [event.target.name] : event.target.value }))
 
     }
 
@@ -65,20 +121,28 @@ function Todo() {
         event.preventDefault()
         // console.log(todo)
         addItem(todo)   
+
     }
 
-    const handleRemove = (index) => {
-        const updatedList = [...todoList];
-        updatedList.splice(index, 1);
-        setTodoList(updatedList);
+    const handleRemove = (itemId) => {
+       
+      deleteTodoFromDB(itemId)
+
+       // const updatedList = [...todoList];
+        // updatedList.splice(index, 1);
+        // setTodoList(updatedList);
+
     }
 
-    const handleEdit = (index) => {
-        setTodo(todoList[index])
-        seteditIndex(index)
+    const handleEdit = (index, itemId) => {
+        setTodo(listOfTodosFromDb[index])
+        seteditIndex(itemId)
     }
 
-    //Using the useLocation hook to grab data from the 'parent component'
+
+    
+
+//Using the useLocation hook to grab data from the 'parent component'
     
 //     const { state } = useLocation()
 //     const loginDetails = state && state.loginData
@@ -96,15 +160,15 @@ function Todo() {
       <div className='container mt-3 align-items-center justify-content-center'>
         <form onSubmit={handleSubmit}>
           <div className='mb-3 row align-items-center justify-content-center'>
-            <label className='col-md-2 col-form-label text-md-end' htmlFor='todoName'>
+            <label className='col-md-2 col-form-label text-md-end' htmlFor='todoTask'>
               Task
             </label>
             <div className='col-md-10'>
               <input
                 className='form-control'
                 type='text'
-                name='todoName'
-                value={todo.todoName}
+                name='todoTask'
+                value={todo.todoTask}
                 onChange={handleInput}
               />
             </div>
@@ -130,19 +194,19 @@ function Todo() {
       </div>
 
       <div className='mt-3'>
-        {todoList.map((item, index) => (
+        {listOfTodosFromDb.map((item, index) => (
           <div className='container mb-3 bg-light p-3 rounded' key={index}>
             <div>
-              <h4>{item.todoName}</h4>
+              <h4>{item.todoTask}</h4>
             </div>
             <div>
               <p>{item.todoDate}</p>
             </div>
             <div className='text-end'>
-            <button onClick={() => handleEdit(index)} className='btn btn-info me-1'>
+            <button onClick={() => handleEdit(index, item.id)} className='btn btn-info me-1'>
                 Edit
               </button>
-              <button onClick={() => handleRemove(index)} className='btn btn-danger'>
+              <button onClick={() => handleRemove(item.id)} className='btn btn-danger'>
                 Remove
               </button>
             </div>
