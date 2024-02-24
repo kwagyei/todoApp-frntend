@@ -197,7 +197,7 @@ function Todo() {
 
       <div className='mt-3' >
         {listOfTodosFromDb.map((item, index) => (
-          <div className='container mb-3 bg-light p-3 rounded' key={index} onClick={() => handleEdit(index, item.id)}>
+          <div className='container mb-3 bg-light p-3 rounded' key={index} >
             <div>
               <h4>{item.todoTask}</h4>
             </div>
